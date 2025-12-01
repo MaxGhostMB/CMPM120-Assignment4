@@ -14,15 +14,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.right = scene.input.keyboard.addKey("D");
         this.down = scene.input.keyboard.addKey("S");
 
-        // this.TILE = 16;
         this.isMoving = false;
 
         this.moveCooldown = 180; // milliseconds
         this.lastMoveTime = 0;
 
         this.createAnimations(scene);
-
-        // this.setCollideWorldBounds(true);
     }
 
     createAnimations(scene) {
@@ -49,8 +46,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.anims.create({
             key: 'moving_down',
-            frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 2 }),
-            frameRate: 20,
+            frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
+            frameRate: 10,
             repeat: 0
         });
     }
