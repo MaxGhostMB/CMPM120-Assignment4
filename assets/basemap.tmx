@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="3">
  <tileset firstgid="1" name="tilemap" tilewidth="16" tileheight="16" spacing="1" tilecount="486" columns="27">
-  <image source="../../../Downloads/kenney_rpg-urban-pack (1)/Tilemap/tilemap.png" width="458" height="305"/>
+  <image source="tilemap.png" width="458" height="305"/>
  </tileset>
  <layer id="1" name="ground" width="20" height="90">
   <data encoding="csv">
@@ -379,4 +379,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="5" name="Object Layer 1">
+  <object id="1" name="Spawn" x="146.507" y="1410.28" width="16.6205" height="17.2361"/>
+ </objectgroup>
 </map>
