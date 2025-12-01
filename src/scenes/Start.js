@@ -9,7 +9,7 @@ export class Start extends Phaser.Scene {
     preload() {
         this.load.tilemapTiledJSON('base_map', 'assets/basemap2.tmj');
         this.load.image('tilemap', 'assets/tilemap.png');
-        this.load.spritesheet('player', 'assets/Player.png', {frameWidth: 16, frameHeight: 16});
+        this.load.spritesheet('player', 'assets/Player.png', {frameWidth: 16, frameHeight: 16}); // startFrame: 0, endFrame: 11, margin: 0, spacing: 1
 
     }
 
@@ -32,7 +32,7 @@ export class Start extends Phaser.Scene {
             const {x = 0, y = 0, name, width = 0, height = 0} = objData;
             switch(name) {
                 case "Spawn":
-                    this.spawnpoint = [x, y];
+                    this.spawnpoint = [x + 8, y + 8];
                     break;
                 default:
                     console.log("Unknown object: " + name);
@@ -52,7 +52,7 @@ export class Start extends Phaser.Scene {
     update(time) {
         let dt = (time - this.last_time)/1000;
         this.last_time = time;
-        this.player.update(dt);
+        this.player.update(time, dt);
     }
     
 }
