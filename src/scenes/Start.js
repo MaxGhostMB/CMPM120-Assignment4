@@ -17,8 +17,8 @@ export class Start extends Phaser.Scene {
         this.last_time = 0;
         this.physics.world.TILE_BIAS = 48;
 
-        this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16, spacing: 1});
-        this.tileset = this.map.addTilesetImage('tilemap');
+        this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16});
+        this.tileset = this.map.addTilesetImage('tilemap', 'tilemap', 16, 16, 0, 1);
 
         this.bglayer = this.map.createLayer("ground", this.tileset, 0, 0);
         this.platlayer = this.map.createLayer("platforms", this.tileset, 0, 0);
