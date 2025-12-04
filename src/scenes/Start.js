@@ -48,7 +48,7 @@ export class Start extends Phaser.Scene {
             this.objlayer.objects.forEach(objData => { const {x = 0, y = 0, name} = objData;
                 if (name === "Spawn") {
                     // spawn
-                    this.spawnpoint = [x + 8, y + 8 + 2 * this.map.tileHeight];
+                    this.spawnpoint = [x + 8, y + 8];
                 }
             });}
 

@@ -506,9 +506,42 @@
          "width":20,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"Objects",
+         "objects":[
+                {
+                 "height":15.8375519669673,
+                 "id":1,
+                 "name":"Spawn",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16.1203653949489,
+                 "x":143.128150950462,
+                 "y":1423.5523355143
+                }, 
+                {
+                 "height":14.7889217531595,
+                 "id":2,
+                 "name":"Mailbox",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":14.7889217531595,
+                 "x":144.39365420812,
+                 "y":0.537778972842162
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":1,
+ "nextlayerid":7,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -517,7 +550,7 @@
         {
          "columns":27,
          "firstgid":1,
-         "image":"..\/..\/Downloads\/kenney_rpg-urban-pack (1)\/Tilemap\/tilemap.png",
+         "image":"tilemap.png",
          "imageheight":305,
          "imagewidth":458,
          "margin":0,

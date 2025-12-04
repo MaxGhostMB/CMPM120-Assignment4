@@ -421,6 +421,17 @@
                  "width":16.1910076181381,
                  "x":143.68276854421,
                  "y":1423.45185825789
+                }, 
+                {
+                 "height":14.3311545317907,
+                 "id":3,
+                 "name":"Mailbox",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":15.3797755950925,
+                 "x":144.010626026775,
+                 "y":0.699080708867839
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -429,7 +440,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":3,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
