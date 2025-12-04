@@ -1,4 +1,5 @@
 import { Player } from '../gameobjects/Player.js';
+import { MailBox } from '../gameobjects/MailBox.js';
 
 export class Start extends Phaser.Scene {
 
@@ -10,7 +11,7 @@ export class Start extends Phaser.Scene {
         this.load.tilemapTiledJSON('base_map', 'assets/basemap2.tmj');
         this.load.image('tilemap', 'assets/tilemap.png');
         this.load.spritesheet('player', 'assets/Player.png', {frameWidth: 16, frameHeight: 16}); // startFrame: 0, endFrame: 11, margin: 0, spacing: 1
-
+        this.load.image('arrow', 'assets/pointer.png');
     }
 
     create() {
@@ -27,12 +28,16 @@ export class Start extends Phaser.Scene {
         this.objlayer = this.map.getObjectLayer("Objects");
 
         this.spawnpoint = [0,0];
+        this.mailboxPos = [0,0];
 
         this.objlayer.objects.forEach(objData => {
             const {x = 0, y = 0, name, width = 0, height = 0} = objData;
             switch(name) {
                 case "Spawn":
                     this.spawnpoint = [x + 8, y + 8];
+                    break;
+                case "Mailbox":
+                    this.mailboxPos = [x + 8, y + 8];
                     break;
                 default:
                     console.log("Unknown object: " + name);
@@ -47,12 +52,22 @@ export class Start extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+        this.mailbox = new MailBox(this, this.mailboxPos[0], this.mailboxPos[1]);
+
+        this.events.on("level-complete", () => {
+            console.log("Scene heard: LEVEL COMPLETE");
+            // this.scene.start("NextScene");
+        });
     }
 
     update(time) {
         let dt = (time - this.last_time)/1000;
         this.last_time = time;
+
         this.player.update(time, dt);
+
+        this.mailbox.update(time, dt, this.player, this.cameras.main);
     }
     
 }
