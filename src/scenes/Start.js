@@ -45,8 +45,7 @@ export class Start extends Phaser.Scene {
 
 
         if (this.objlayer) {
-            this.objlayer.objects.forEach(objData => {
-                const {x = 0, y = 0, name} = objData;
+            this.objlayer.objects.forEach(objData => { const {x = 0, y = 0, name} = objData;
                 if (name === "Spawn") {
                     // spawn
                     this.spawnpoint = [x + 8, y + 8 + 2 * this.map.tileHeight];
@@ -88,30 +87,18 @@ export class Start extends Phaser.Scene {
                 const roadendHeight = y - 1;
                 
                 // Top lane aka left lane has left moving cars
-                lanes.push({
-                    y: (roadstartHeight + 1) * this.map.tileHeight,
-                    direction: -1
-                });
+                lanes.push({ y: (roadstartHeight + 1) * this.map.tileHeight, direction: -1 });
                 
                 // bottom lane aka right lane has right moving cars
-                lanes.push({
-                    y: (roadendHeight + 1) * this.map.tileHeight,
-                    direction: 1
-                });
+                lanes.push({ y: (roadendHeight + 1) * this.map.tileHeight, direction: 1 });
             }
         }
         
         if (insideRoadBlocks) {
             // if road goes to end of map
             const roadendHeight = this.map.height - 1;
-            lanes.push({
-                y: (roadstartHeight + 1) * this.map.tileHeight,
-                direction: -1
-            });
-            lanes.push({
-                y: (roadendHeight + 1) * this.map.tileHeight,
-                direction: 1
-            });
+            lanes.push({ y: (roadstartHeight + 1) * this.map.tileHeight, direction: -1 });
+            lanes.push({ y: (roadendHeight + 1) * this.map.tileHeight, direction: 1 });
         }
         return lanes;
     }
