@@ -126,32 +126,47 @@ export class Start extends Phaser.Scene {
         if (direction === 1) {
             spawnCordX = -50;
         } else {
-            spawnCordX = this.map.widthInPixels + 50;}
-        
+            spawnCordX = this.map.widthInPixels + 50;
+        }
+
+        // adjusts right lane cars more so that the player can stand in middle of road and also on sides without getting hit by hit boxes
+        let spawnY = laneY;
+        if (direction === -1) {
+            spawnY = laneY - 1;
+        } else if (direction === 1) {
+            // adjusts right lane cars more so that the player can stand in middle of road
+            spawnY = laneY - 1;
+        }
+
         if (!this.isLaneClear(laneY, spawnCordX, direction)) {
             return;}
-        
+
         const speed = 100;
-        
+
         let enemy = this.enemies.getFirstDead(false);
         if (!enemy) {
-            enemy = new Enemy(this, spawnCordX, laneY);
+            enemy = new Enemy(this, spawnCordX, spawnY);
             this.enemies.add(enemy);
         }
-        
-        enemy.spawn(spawnCordX, laneY, direction, speed);
+
+        // pass the original laneY so the enemy keeps a reference to its lane
+        enemy.spawn(spawnCordX, spawnY, direction, speed, laneY);
     }
 
     isLaneClear(laneY, spawnCordX, direction) {
-        const activeCars = this.enemies.getChildren().filter(enemy => enemy.active && Math.abs(enemy.y - laneY) < 5 && enemy.direction === direction
-        );
+        const activeCars = this.enemies.getChildren().filter(enemy => {
+            const enemyLane = (enemy.laneY !== undefined) ? enemy.laneY : enemy.y;
+            return enemy.active && Math.abs(enemyLane - laneY) < 5 && enemy.direction === direction;
+        });
 
         for (let car of activeCars) {
             const distance = Math.abs(car.x - spawnCordX);
-            if (distance< this.minCarSpacing) {
+            if (distance < this.minCarSpacing) {
                 return false;
-            }}
-        return true; }
+            }
+        }
+        return true;
+    }
 
     handlePlayerHit(player, enemy) {
         player.setPosition(this.spawnpoint[0], this.spawnpoint[1]);
