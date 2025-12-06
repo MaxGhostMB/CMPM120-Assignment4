@@ -19,15 +19,21 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(false);
     }
     
-    spawn(x, y, direction, speed) {
+    spawn(x, y, direction, speed, laneY) {
         this.setPosition(x, y);
         this.setActive(true);
         this.setVisible(true);
-        
+
         const textures = ['redcar','taxicar'];
         this.setTexture(Phaser.Math.RND.pick(textures));
-        
-        this.direction =direction;
+
+        if (laneY !== undefined) {
+            this.laneY = laneY;
+        } else {
+            this.laneY = y;
+        }
+
+        this.direction = direction;
         this.speed = speed;
         this.body.setVelocityX(speed * direction);
         this.setFlipX(direction === -1);
