@@ -1,6 +1,6 @@
 export class MailBox extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, "mailbox");
+    constructor(scene, x, y, player) {
+        super(scene, x, y);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -9,21 +9,22 @@ export class MailBox extends Phaser.Physics.Arcade.Sprite {
         this.body.setAllowGravity(false);
 
         // Proximity zone
+        player;
         this.interactionZone = scene.add.zone(x, y, 16, 16);
         scene.physics.add.existing(this.interactionZone);
+        scene.physics.add.overlap(player, this.interactionZone, (playerObj, zoneObj) => {
+            console.log("Overlap!");
+            this.nearPlayer = true;
+        });
         this.interactionZone.body.setAllowGravity(false);
         this.interactionZone.body.setImmovable(true);
 
-        // Arrow indicator (HUD)
-        this.arrow = scene.add.image(0, 0, "arrow");
-        this.arrow.setDisplaySize(16, 16);
-        this.arrow.setScrollFactor(0);   // IMPORTANT
-        this.arrow.setDepth(9999);       // ALWAYS ON TOP
-        this.arrow.setVisible(false);
-
         this.nearPlayer = false;
 
-        // Listen for interaction
+        this.dot = scene.add.sprite(x, y, "dot");
+        this.dot.setScale(0.025);
+        this.dot.setDepth(6);
+
         scene.input.keyboard.on("keydown-E", () => {
             if (this.nearPlayer) {
                 this.onInteract();
@@ -36,22 +37,47 @@ export class MailBox extends Phaser.Physics.Arcade.Sprite {
         this.scene.events.emit("level-complete");
     }
 
-    update(time, delta, player, camera) {
-        this.arrow.setVisible(true);
-        this.arrow.x = 100;
-        this.arrow.y = 100;
-        // Reset each frame — scene can also reset
-        this.nearPlayer = false;
+    update(time, delta, player) {
+        const cam = this.scene.cameras.main;
+        const view = cam.worldView;
 
-        // Check overlap manually (no collider needed)
-        const dist = Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y);
-        this.nearPlayer = dist < 24;
+        let arrowX = this.x;
+        let arrowY = this.y;
+        let offscreen = false;
 
-        // Update arrow visibility & position
-        this.updateArrow(player, camera);
-    }
+        if (this.x < view.x) {
+            arrowX = view.x + 5;
+            offscreen = true;
+        } else if (this.x > view.x + view.width) {
+            arrowX = view.x + view.width - 5;
+            offscreen = true;
+        }
 
-    updateArrow(player, cam) {
-        // TODO: MAKE THIS WORK!!!
+        if (this.y < view.y) {
+            arrowY = view.y + 5;
+            offscreen = true;
+        } else if (this.y > view.y + view.height) {
+            arrowY = view.y + view.height - 5;
+            offscreen = true;
+        }
+
+        if (offscreen) {
+            // Clamp to edge
+            this.dot.setPosition(arrowX, arrowY);
+        } else {
+            // Mailbox is visible → place arrow above player
+            this.dot.setPosition(player.x, player.y - 20);
+        }
+
+        this.dot.setVisible(true);
+
+        const angle = Phaser.Math.Angle.Between(
+            this.dot.x,
+            this.dot.y,
+            this.x,       // mailbox.x
+            this.y        // mailbox.y
+        );
+
+        this.dot.rotation = angle;
     }
 }

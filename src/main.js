@@ -1,3 +1,4 @@
+import { leveltwo } from './scenes/LevelTwo.js';
 import { Start } from './scenes/Start.js';
 
 const config = {
@@ -13,7 +14,8 @@ const config = {
         arcade:{debug:false}
     },
     scene: [
-        Start
+        //Start,
+        leveltwo
     ],
     scale: {
         mode: Phaser.Scale.FIT,

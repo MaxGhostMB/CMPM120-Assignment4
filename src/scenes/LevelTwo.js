@@ -2,13 +2,13 @@ import { Player } from '../gameobjects/Player.js';
 import { MailBox } from '../gameobjects/MailBox.js';
 import { Enemy } from '../gameobjects/Enemy.js';
 
-export class Start extends Phaser.Scene {
+export class leveltwo extends Phaser.Scene {
     constructor() {
-        super('Start');
+        super('leveltwo');
     }
 
     preload() {
-        this.load.tilemapTiledJSON('base_map', 'assets/basemap_withroads_2.tmj');
+        this.load.tilemapTiledJSON('base_map', 'assets/basemap_level_two.tmj');
         this.load.image('tilemap', 'assets/tilemap.png');
         this.load.spritesheet('player', 'assets/Player.png', {frameWidth: 16, frameHeight: 16});
         this.load.image('redcar', 'assets/redcar.png');
@@ -20,13 +20,13 @@ export class Start extends Phaser.Scene {
         this.last_time = 0;
         this.physics.world.TILE_BIAS = 48;
         this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16});
-        this.tileset = this.map.addTilesetImage('tilemap', 'tilemap', 16, 16, 0, 1);
-        this.bglayer = this.map.createLayer("ground", this.tileset, 0, 0);
-        this.platlayer = this.map.createLayer("platforms", this.tileset, 0, 0);
-        this.obslayer = this.map.createLayer("obstacles", this.tileset, 0, 0);
-        this.mailboxlayer = this.map.createLayer("mailbox", this.tileset, 0, 0);
+        this.tileset = this.map.addTilesetImage('tilemap', 'tilemap', 16, 16);
+        this.bglayer = this.map.createLayer("ground", this.tileset);
+        this.mailboxlayer = this.map.createLayer("mailbox", this.tileset);
+        this.roadlayer = this.map.createLayer("roads", this.tileset);
+        this.waterlayer = this.map.createLayer("water", this.tileset);
+        //this.plantlayer = this.map.createLayer("plants", this.tileset);
         //dis is what i added for enemies to track
-        this.roadlayer = this.map.createLayer("roads", this.tileset, 0, 0);
         this.objlayer = this.map.getObjectLayer("Objects");
         // top lane is left lane bottom lane is right lane
         this.roadLanes = this.getRoadLanes();
@@ -42,6 +42,10 @@ export class Start extends Phaser.Scene {
         //we can change this per level or something idk if we wanna change difficulty
         this.minCarSpacing = 80;
         this.startEnemySpawning();
+
+        this.buildinglayer = this.map.createLayer("buildings", this.tileset);
+        this.decorlayer = this.map.createLayer("decor", this.tileset);
+
         this.spawnpoint = [this.map.widthInPixels/2, this.map.heightInPixels - 50 + 2 * this.map.tileHeight];
         this.mailboxspawnpoint = [0,0];
 
