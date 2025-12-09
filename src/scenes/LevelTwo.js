@@ -21,9 +21,11 @@ export class leveltwo extends Phaser.Scene {
         this.physics.world.TILE_BIAS = 48;
         this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16});
         this.tileset = this.map.addTilesetImage('tilemap', 'tilemap', 16, 16);
-        this.bglayer = this.map.createLayer("ground", this.tileset);
+        this.bglayer = this.map.createLayer("bg", this.tileset);
+        this.grounglayer = this.map.createLayer("ground", this.tileset);
         this.mailboxlayer = this.map.createLayer("mailbox", this.tileset);
         this.roadlayer = this.map.createLayer("roads", this.tileset);
+        this.pbclayer = this.map.createLayer("plants_behind_cars", this.tileset);
         this.waterlayer = this.map.createLayer("water", this.tileset);
         //this.plantlayer = this.map.createLayer("plants", this.tileset);
         //dis is what i added for enemies to track
@@ -43,14 +45,28 @@ export class leveltwo extends Phaser.Scene {
         this.minCarSpacing = 80;
         this.startEnemySpawning();
 
+        this.plantlayer = this.map.createLayer("plants", this.tileset);
         this.buildinglayer = this.map.createLayer("buildings", this.tileset);
         this.decorlayer = this.map.createLayer("decor", this.tileset);
+        this.plantlayer.setDepth(8);
+        this.buildinglayer.setDepth(9);
+        this.decorlayer.setDepth(10);
+
 
         this.spawnpoint = [this.map.widthInPixels/2, this.map.heightInPixels - 50 + 2 * this.map.tileHeight];
         this.mailboxspawnpoint = [0,0];
 
+        this.colisions = this.physics.add.staticGroup();
+        this.buildings = this.physics.add.staticGroup();
+
+        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        this.add.graphics()
+            .lineStyle(2, 0xff0000)
+            .strokeRectShape(this.physics.world.bounds);
+
         if (this.objlayer) {
-            this.objlayer.objects.forEach(objData => { const {x = 0, y = 0, name} = objData;
+            this.objlayer.objects.forEach(objData => { 
+                const {x = 0, y = 0, name, width = 0, height = 0} = objData;
                 if (name === "Spawn") {
                     // spawn
                     this.spawnpoint = [x + 8, y + 8];
@@ -59,14 +75,44 @@ export class leveltwo extends Phaser.Scene {
                     // spawn
                     this.mailboxspawnpoint = [x + 8, y + 8];
                 }
-            });}
+                if (name === "Object" || name === "Building") {
+                    const shrink = 2;  // you can tweak this
+
+                    // Add zone slightly smaller
+                    const zone = this.add.zone(
+                        x + width / 2,   // center X
+                        y + height / 2,  // center Y
+                        width - shrink * 2,   // new width
+                        height - shrink * 2   // new height
+                    );
+
+                    // Add a static Arcade Physics body
+                    this.physics.add.existing(zone, true);  // `true` = static body
+
+                    // Optional: hide the zone
+                    zone.setVisible(false);
+                    // Add to the right array/group
+                    if (name === "Object") this.colisions.add(zone);
+                    if (name === "Building") this.buildings.add(zone);
+                }
+            });
+        }
 
         this.player = new Player(this, this.spawnpoint[0], this.spawnpoint[1], 'player', 0);
+
         this.playerHit = false;
         this.inputEnabled = true;
+        this.player.setCollideWorldBounds(true);
+
+        this.physics.add.collider(this.player, this.colisions, () => {
+            console.log("help")
+        });
+        this.physics.add.collider(this.player, this.buildings,  () => {
+            console.log("GOD")
+        });
 
         this.mailbox = new MailBox(this, this.mailboxspawnpoint[0], this.mailboxspawnpoint[1], this.player);
-
+        
         this.cameras.main.setZoom(4);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);

@@ -6,9 +6,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.body.setImmovable(true);
-        this.body.setAllowGravity(false);
-
         this.up = scene.input.keyboard.addKey("W");
         this.left = scene.input.keyboard.addKey("A");
         this.right = scene.input.keyboard.addKey("D");
@@ -52,12 +49,41 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    canMoveTo(targetX, targetY) {
+        const TILE = 16;
+
+        // Shrink player rectangle slightly, but clamp to tile
+        const width = Math.min(this.width - 6, TILE);
+        const height = Math.min(this.height - 6, TILE);
+
+        const playerRect = new Phaser.Geom.Rectangle(
+            targetX, 
+            targetY, 
+            width, 
+            height
+        );
+
+        let blocked = false;
+
+        this.scene.colisions.getChildren().forEach(obj => {
+            if (Phaser.Geom.Intersects.RectangleToRectangle(playerRect, obj.getBounds())) {
+                blocked = true;
+            }
+        });
+
+        this.scene.buildings.getChildren().forEach(obj => {
+            if (Phaser.Geom.Intersects.RectangleToRectangle(playerRect, obj.getBounds())) {
+                blocked = true;
+            }
+        });
+
+        return !blocked;
+    }
+
     move(dir, time) {
-        this.isMoving = true;
-        this.lastMoveTime = time;
+        if (this.isMoving) return;
 
-        const TILE = 16
-
+        const TILE = 16;
         let dx = 0, dy = 0;
 
         if (dir === 'up')    dy = -TILE;
@@ -65,16 +91,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (dir === 'left')  dx = -TILE;
         if (dir === 'right') dx =  TILE;
 
+        const targetX = this.x + dx;
+        const targetY = this.y + dy;
+
+        if (!this.canMoveTo(targetX, targetY)) return; // stop if blocked
+
+        this.isMoving = true;
+        this.lastMoveTime = time;
         this.anims.play("moving_" + dir);
 
         this.scene.tweens.add({
             targets: this,
-            x: this.x + dx,
-            y: this.y + dy,
-            duration: 90,  
-            onComplete: () => {
-                this.isMoving = false;
-            }
+            x: targetX,
+            y: targetY,
+            duration: 90,
+            onComplete: () => { this.isMoving = false; }
         });
     }
 
