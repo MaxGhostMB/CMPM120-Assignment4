@@ -60,9 +60,9 @@ export class leveltwo extends Phaser.Scene {
         this.buildings = this.physics.add.staticGroup();
 
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.add.graphics()
-            .lineStyle(2, 0xff0000)
-            .strokeRectShape(this.physics.world.bounds);
+        // this.add.graphics()
+        //     .lineStyle(2, 0xff0000)
+        //     .strokeRectShape(this.physics.world.bounds);
 
         if (this.objlayer) {
             this.objlayer.objects.forEach(objData => { 
