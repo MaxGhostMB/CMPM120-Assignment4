@@ -25,7 +25,7 @@ export class leveltwo extends Phaser.Scene {
     create() {
         this.sound.play('car_noise', {
             loop:true,
-            volume:0.4
+            volume:0.3
         });
         this.sound.play('music', {
             loop:true,

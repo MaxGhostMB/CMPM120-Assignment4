@@ -14,9 +14,21 @@ export class Start extends Phaser.Scene {
         this.load.image('redcar', 'assets/redcar.png');
         this.load.image('taxicar', 'assets/taxicar.png');
         this.load.image('dot', 'assets/pointer.png');
+        this.load.audio('car_noise', 'assets/sounds/Street0.ogg');
+        this.load.audio('music', 'assets/sounds/Sunlight Through Leaves.mp3');
+        this.load.audio('car_hit', 'assets/sounds/Vehicle_Car_Trunk_Close_Impact_Mono.wav');
     }
 
     create() {
+        this.sound.play('car_noise', {
+            loop:true,
+            volume:0.3
+        });
+        this.sound.play('music', {
+            loop:true,
+            volume:0.5
+        });
+
         this.last_time = 0;
         this.physics.world.TILE_BIAS = 48;
         this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16});
@@ -231,6 +243,7 @@ export class Start extends Phaser.Scene {
         if (this.playerHit) return;
         this.playerHit = true;
 
+        this.sound.play('car_hit');
         const cam = this.cameras.main;
 
         // STOP all player movement immediately
@@ -244,6 +257,7 @@ export class Start extends Phaser.Scene {
 
         cam.once('camerafadeoutcomplete', () => {
             this.time.delayedCall(500, () => { // 500ms = half a second
+                this.sound.stopAll();
                 this.scene.restart();
             });
         });
@@ -273,7 +287,8 @@ export class Start extends Phaser.Scene {
 
             const camBottom = this.cameras.main.scrollY + this.cameras.main.height - 100;
 
-            if (this.player.y > camBottom ) {  // 20px buffer
+            if (this.player.y > camBottom ) { 
+                this.sound.stopAll();
                 this.scene.restart();
             }
 

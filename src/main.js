@@ -12,10 +12,10 @@ const config = {
     pixelArt: true,
     physics: {
         default: "arcade", 
-        arcade:{debug:true}
+        //arcade:{debug:true}
     },
     scene: [
-        //Start,
+        Start,
         leveltwo
     ],
     scale: {
