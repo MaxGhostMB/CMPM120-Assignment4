@@ -23,7 +23,7 @@ export class MailBox extends Phaser.Physics.Arcade.Sprite {
 
         this.dot = scene.add.sprite(x, y, "dot");
         this.dot.setScale(0.025);
-        this.dot.setDepth(6);
+        this.dot.setDepth(15);
 
         scene.input.keyboard.on("keydown-E", () => {
             if (this.nearPlayer) {

@@ -124,7 +124,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             targets: this,
             alpha: 0.5,
             yoyo: true,
-            repeat: -1,
+            repeat: duration,
             duration: 200
         });
 
@@ -141,7 +141,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setAlpha(1);
         });
     }
-
+    
     update(time, dt) {
         if (this.isMoving) return;
 

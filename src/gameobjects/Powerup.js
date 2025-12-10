@@ -9,6 +9,6 @@ export class PowerUp extends Phaser.Physics.Arcade.Sprite {
 
     collect(player) {
         this.destroy(); // remove the power-up
-        player.activateInvincibility(3000); // 10 seconds
+        player.activateInvincibility(2000);
     }
 }

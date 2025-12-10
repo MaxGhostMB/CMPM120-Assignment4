@@ -16,10 +16,22 @@ export class leveltwo extends Phaser.Scene {
         this.load.image('taxicar', 'assets/taxicar.png');
         this.load.image('dot', 'assets/pointer.png');
         this.load.image('pp', 'assets/Skateboard.png');
+        this.load.audio('car_noise', 'assets/sounds/Street0.ogg');
+        this.load.audio('music', 'assets/sounds/Sunlight Through Leaves.mp3');
+        this.load.audio('car_hit', 'assets/sounds/Vehicle_Car_Trunk_Close_Impact_Mono.wav');
 
     }
 
     create() {
+        this.sound.play('car_noise', {
+            loop:true,
+            volume:0.4
+        });
+        this.sound.play('music', {
+            loop:true,
+            volume:0.5
+        });
+
         this.last_time = 0;
         this.physics.world.TILE_BIAS = 48;
         this.map = this.make.tilemap({ key: 'base_map', tileWidth: 16, tileHeight: 16});
@@ -140,7 +152,6 @@ export class leveltwo extends Phaser.Scene {
         this.delayMax = .02;
 
         this.physics.add.overlap(this.player, this.powerups, (player, powerUp) => {
-
             console.log('power up detected')
             powerUp.collect(player);
         });
@@ -257,18 +268,17 @@ export class leveltwo extends Phaser.Scene {
 
     handlePlayerHit(player, enemy) {
         if (this.playerHit) return;
-        this.playerHit = true;
 
         if (player.isInvincible) {
-            if (enemy && enemy.active) {
-                this.enemies.killAndHide(enemy); // if using pooling
-                enemy.setActive(false);
-                enemy.setVisible(false);
-                enemy.body.enable = false;
+            if (enemy) {
+                enemy.destroy();
                 return
             }
         }
 
+        this.playerHit = true;
+
+        this.sound.play('car_hit');
         const cam = this.cameras.main;
 
         // STOP all player movement immediately
@@ -282,6 +292,7 @@ export class leveltwo extends Phaser.Scene {
 
         cam.once('camerafadeoutcomplete', () => {
             this.time.delayedCall(500, () => { // 500ms = half a second
+                this.sound.stopAll();
                 this.scene.restart();
             });
         });
@@ -312,6 +323,7 @@ export class leveltwo extends Phaser.Scene {
             const camBottom = this.cameras.main.scrollY + this.cameras.main.height - 100;
 
             if (this.player.y > camBottom ) {  // 20px buffer
+                this.sound.stopAll();
                 this.scene.restart();
             }
 

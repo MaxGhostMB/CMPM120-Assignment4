@@ -1697,8 +1697,8 @@
                  "type":"",
                  "visible":true,
                  "width":16.2387090226327,
-                 "x":175.581041307216,
-                 "y":542.474373287324
+                 "x":132.447846000108,
+                 "y":430.328065488842
                 }, 
                 {
                  "height":13.8033845899015,
@@ -1710,17 +1710,6 @@
                  "width":5.79742152775862,
                  "x":309.747950197388,
                  "y":672.776964911796
-                }, 
-                {
-                 "height":19.8412698412699,
-                 "id":104,
-                 "name":"Power-up",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":20.703933747412,
-                 "x":105.244996549344,
-                 "y":917.874396135266
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1729,7 +1718,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":105,
+ "nextobjectid":106,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
