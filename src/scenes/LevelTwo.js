@@ -1,6 +1,7 @@
 import { Player } from '../gameobjects/Player.js';
 import { MailBox } from '../gameobjects/MailBox.js';
 import { Enemy } from '../gameobjects/Enemy.js';
+import { PowerUp } from '../gameobjects/Powerup.js';
 
 export class leveltwo extends Phaser.Scene {
     constructor() {
@@ -14,6 +15,8 @@ export class leveltwo extends Phaser.Scene {
         this.load.image('redcar', 'assets/redcar.png');
         this.load.image('taxicar', 'assets/taxicar.png');
         this.load.image('dot', 'assets/pointer.png');
+        this.load.image('pp', 'assets/Skateboard.png');
+
     }
 
     create() {
@@ -58,6 +61,10 @@ export class leveltwo extends Phaser.Scene {
 
         this.colisions = this.physics.add.staticGroup();
         this.buildings = this.physics.add.staticGroup();
+        this.powerups = this.physics.add.group({
+            classType: PowerUp,
+            runChildUpdate: true
+        });
 
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         // this.add.graphics()
@@ -95,29 +102,48 @@ export class leveltwo extends Phaser.Scene {
                     if (name === "Object") this.colisions.add(zone);
                     if (name === "Building") this.buildings.add(zone);
                 }
+                if (name === "Power-up") {
+                    const pu = new PowerUp(this, x + 8, y + 8, 'pp');
+                    this.powerups.add(pu);
+
+                }
             });
         }
 
         this.player = new Player(this, this.spawnpoint[0], this.spawnpoint[1], 'player', 0);
+        this.playerStartedMoving = false;
+        this.playerLastTileY = this.player.y;
 
         this.playerHit = false;
         this.inputEnabled = true;
         this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, this.colisions, () => {
-            console.log("help")
-        });
-        this.physics.add.collider(this.player, this.buildings,  () => {
-            console.log("GOD")
-        });
+        this.physics.add.collider(this.player, this.colisions);
+        this.physics.add.collider(this.player, this.buildings);
 
         this.mailbox = new MailBox(this, this.mailboxspawnpoint[0], this.mailboxspawnpoint[1], this.player);
         
+        this.cameraScrollSpeed = 4; 
+
         this.cameras.main.setZoom(4);
-        this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        //this.cameras.main.scrollY = this.map.heightInPixels - this.cameras.main.height;
+        this.cameras.main.scrollY = this.player.y - this.cameras.main.height / 2;
+
         this.physics.add.overlap(this.player, this.enemies, this.handlePlayerHit, null, this);
-        this.cameraScrollSpeed = 1;
+
+        this.cameraScrollY = this.player.y - this.cameras.main.height / 2; // starting camera Y
+        this.cameras.main.scrollY = this.cameraScrollY;
+
+        // remove me later
+        this.delay = 0;
+        this.delayMax = .02;
+
+        this.physics.add.overlap(this.player, this.powerups, (player, powerUp) => {
+
+            console.log('power up detected')
+            powerUp.collect(player);
+        });
     }
 
     getRoadLanes() {
@@ -233,10 +259,20 @@ export class leveltwo extends Phaser.Scene {
         if (this.playerHit) return;
         this.playerHit = true;
 
+        if (player.isInvincible) {
+            if (enemy && enemy.active) {
+                this.enemies.killAndHide(enemy); // if using pooling
+                enemy.setActive(false);
+                enemy.setVisible(false);
+                enemy.body.enable = false;
+                return
+            }
+        }
+
         const cam = this.cameras.main;
 
         // STOP all player movement immediately
-        player.inputEnabled = false;       // <--- this freezes input
+        player.inputEnabled = false;
         player.setVelocity(0, 0);
         player.isMoving = false;
         player.anims.stop();
@@ -245,18 +281,8 @@ export class leveltwo extends Phaser.Scene {
         cam.fadeOut(300, 0, 0, 0);
 
         cam.once('camerafadeoutcomplete', () => {
-            this.cameras.main.scrollY = this.map.heightInPixels - this.cameras.main.height;
-            // Teleport player while screen is black
-            player.setPosition(this.spawnpoint[0], this.spawnpoint[1]);
-            if (player.body) player.body.setVelocity(0, 0);
-
-            // Fade In
-            cam.fadeIn(300, 0, 0, 0);
-
-            cam.once('camerafadeincomplete', () => {
-                // Re-enable input AFTER fade completes
-                player.inputEnabled = true;    // <--- input restored
-                this.playerHit = false;
+            this.time.delayedCall(500, () => { // 500ms = half a second
+                this.scene.restart();
             });
         });
     }
@@ -267,11 +293,28 @@ export class leveltwo extends Phaser.Scene {
             return; // completely stop movement + ignore keys
         }
 
-        this.cameras.main.scrollY -= this.cameraScrollSpeed;
-        const camBottom = this.cameras.main.scrollY + this.cameras.main.height;
+        if (!this.playerStartedMoving) {
+            if (this.player.y !== this.playerLastTileY) { // player has moved vertically
+                this.playerStartedMoving = true;
+            }
+        }
+        this.playerLastTileY = this.player.y; 
 
-        if (this.player.y > camBottom + 20) {  // 20px buffer
-            this.handlePlayerHit(this.player, null);
+
+        if (this.playerStartedMoving) {
+            const deltaMili = dt / 1000;
+            this.delay += deltaMili;
+            if (this.delay > this.delayMax) {
+                this.cameras.main.scrollY -= this.cameraScrollSpeed * deltaMili;
+                this.delay = 0;
+            }
+
+            const camBottom = this.cameras.main.scrollY + this.cameras.main.height - 100;
+
+            if (this.player.y > camBottom ) {  // 20px buffer
+                this.scene.restart();
+            }
+
         }
 
         this.last_time = time;

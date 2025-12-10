@@ -11,10 +11,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.right = scene.input.keyboard.addKey("D");
         this.down = scene.input.keyboard.addKey("S");
 
+        this.upArrow = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.downArrow = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.leftArrow = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.rightArrow = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
         this.isMoving = false;
 
         this.moveCooldown = 180; // milliseconds
         this.lastMoveTime = 0;
+
+        this.isInvincible = false;
 
         this.createAnimations(scene);
     }
@@ -109,18 +116,44 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    activateInvincibility(duration) {
+        this.isInvincible = true;
+
+        // Flash effect to show invincibility
+        this.invincibilityTween = this.scene.tweens.add({
+            targets: this,
+            alpha: 0.5,
+            yoyo: true,
+            repeat: -1,
+            duration: 200
+        });
+
+        // Remove invincibility after duration
+        this.scene.time.delayedCall(duration, () => {
+            this.isInvincible = false;
+
+            // Stop the tween
+            if (this.invincibilityTween) {
+                this.invincibilityTween.stop();
+                this.invincibilityTween = null;
+            }
+
+            this.setAlpha(1);
+        });
+    }
+
     update(time, dt) {
         if (this.isMoving) return;
 
         if (time - this.lastMoveTime < this.moveCooldown) return;
 
-        if (this.up.isDown) {
+        if ((this.up.isDown || this.upArrow.isDown)) {
             this.move('up', time);
-        } else if (this.down.isDown) {
+        } else if ((this.down.isDown || this.downArrow.isDown)) {
             this.move('down', time);
-        } else if (this.left.isDown) {
+        } else if ((this.left.isDown || this.leftArrow.isDown)) {
             this.move('left', time);
-        } else if (this.right.isDown) {
+        } else if ((this.right.isDown || this.rightArrow.isDown)) {
             this.move('right', time);
         }
     }
