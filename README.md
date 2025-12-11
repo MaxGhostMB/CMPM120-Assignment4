@@ -33,7 +33,7 @@ when the player gets hit the lvl restarts
 Delivery Mechanic / Next level: 1 pnt 
 - When the player reaches the end of the level, is it clear that they are supposed to click a mailbox to deliver mail and when they do, does it take them to the next level?
 
-...
+The player will see text that clearly indicates to the that they need to press 'E' to deliver the mail. Once clicked, the next level (level two) will load.
 - Completed: 1
 
 Unique obstruction: 1 pnt 
