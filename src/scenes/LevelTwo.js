@@ -94,6 +94,23 @@ export class leveltwo extends Phaser.Scene {
                     // spawn
                     this.mailboxspawnpoint = [x + 8, y + 8];
                 }
+                if (objData.text) {
+                    const { text, x, y } = objData;
+                    const { text: textContent, pixelsize, fontfamily } = text;
+                    
+                    const textObj = this.add.text(x, y, textContent, {
+                        fontSize: (pixelsize) + 'px',
+                        fontFamily: fontfamily || 'Sans-serif',
+                        color: '#ffffff',
+                        backgroundColor: '#000000',
+                        padding: { x: 8, y: 4 },
+                        stroke: '#000000',
+                        strokeThickness: 4
+                    });
+                 
+                
+                   
+                }
                 if (name === "Object" || name === "Building") {
                     const shrink = 2;  // you can tweak this
 
