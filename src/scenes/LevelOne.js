@@ -147,7 +147,7 @@ export class LevelOne extends Phaser.Scene {
         this.physics.add.collider(this.player, this.waterObstacles);
 // works
         // mailbox system
-        this.mailbox = new MailBox(this, this.mailboxspawnpoint[0], this.mailboxspawnpoint[1], this.player);
+        this.mailbox = new MailBox(this, this.mailboxspawnpoint[0], this.mailboxspawnpoint[1], this.player, 'leveltwo');
         
         // camera
         this.cameraScrollSpeed = 4; 
