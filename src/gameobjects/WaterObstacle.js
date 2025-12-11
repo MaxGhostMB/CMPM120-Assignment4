@@ -10,7 +10,7 @@ export class WaterObstacle extends Phaser.Physics.Arcade.Sprite {
         
         this.setDisplaySize(80, 96);
         this.body.setSize(80, 96);
-        this.body.setOffset(-40, -48);
+        this.body.setOffset(0, 0);
         
         this.setActive(false);
         this.setVisible(false);
