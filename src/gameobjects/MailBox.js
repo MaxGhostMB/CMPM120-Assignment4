@@ -1,46 +1,49 @@
 export class MailBox extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, player) {
-        super(scene, x, y);
-
+    constructor(scene, x, y, player, targetScene = null) {
+        super(scene, x, y, 'dot');
+        this.setVisible(false);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
         this.body.setImmovable(true);
         this.body.setAllowGravity(false);
-
-        // Proximity zone
-        player;
-        this.interactionZone = scene.add.zone(x, y, 16, 16);
-        scene.physics.add.existing(this.interactionZone);
-        scene.physics.add.overlap(player, this.interactionZone, (playerObj, zoneObj) => {
-            console.log("Overlap!");
-            this.nearPlayer = true;
-        });
-        this.interactionZone.body.setAllowGravity(false);
-        this.interactionZone.body.setImmovable(true);
-
+        this.player = player;
+        this.targetScene = targetScene; //transiiton scene
         this.nearPlayer = false;
+        this.hasInteracted = false;
 
+        // arrow more logic down below
         this.dot = scene.add.sprite(x, y, "dot");
         this.dot.setScale(0.025);
         this.dot.setDepth(15);
 
+        // e
         scene.input.keyboard.on("keydown-E", () => {
-            if (this.nearPlayer) {
+            if (this.nearPlayer && !this.hasInteracted) {
                 this.onInteract();
-            }
-        });
-    }
+            } }); }
 
     onInteract() {
-        console.log("Mailbox interacted — LEVEL COMPLETE.");
-        this.scene.events.emit("level-complete");
+        this.hasInteracted = true;
+        //console.log(`Loading ${this.targetScene || 'broke'}`);
+        
+        // fod audio logistics and not funky
+        this.scene.sound.stopAll();
+        
+        // scne trans
+        if (this.targetScene) {
+            this.scene.scene.start(this.targetScene);
+        }
     }
 
     update(time, delta, player) {
         const cam = this.scene.cameras.main;
         const view = cam.worldView;
 
+        // check if player close to mail box (i did 1.5 tiles you can change it if you want)
+        const distance = Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y);
+        this.nearPlayer = distance < 24;
+
+        // arrow logic
         let arrowX = this.x;
         let arrowY = this.y;
         let offscreen = false;
@@ -61,23 +64,17 @@ export class MailBox extends Phaser.Physics.Arcade.Sprite {
             offscreen = true;
         }
 
+        // arrow pos
         if (offscreen) {
-            // Clamp to edge
             this.dot.setPosition(arrowX, arrowY);
         } else {
-            // Mailbox is visible → place arrow above player
             this.dot.setPosition(player.x, player.y - 20);
         }
 
         this.dot.setVisible(true);
 
-        const angle = Phaser.Math.Angle.Between(
-            this.dot.x,
-            this.dot.y,
-            this.x,       // mailbox.x
-            this.y        // mailbox.y
-        );
-
+        // Rotate arrow to point toward mailbox
+        const angle = Phaser.Math.Angle.Between(this.dot.x, this.dot.y, this.x, this.y);
         this.dot.rotation = angle;
     }
 }
