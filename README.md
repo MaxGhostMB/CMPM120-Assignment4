@@ -4,8 +4,8 @@ Group members: Max Brockmann and Ava Johnson
 Game Mechanics:
 you move with WASD or the arrow keys 
 when stepping into the road cars kill the player 
-lvl 1: don't step in the water!
-lvl 2: grab the skateboard to become invincible! 
+lvl 1: don't step in the water! - Ava 
+lvl 2: grab the skateboard to become invincible! - Max
 
 Rubric:
 Individual Level Map: 3 pnt 
