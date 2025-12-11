@@ -1743,6 +1743,24 @@
                  "width":9.34579,
                  "x":18.8930321180596,
                  "y":1410.64724192436
+                }, 
+                {
+                 "height":17,
+                 "id":109,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "fontfamily":"Sans-serif",
+                     "pixelsize":6,
+                     "text":" Press E to deliver mail",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":124.45,
+                 "y":15.05
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1751,7 +1769,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":109,
+ "nextobjectid":110,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
