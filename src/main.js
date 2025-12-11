@@ -1,5 +1,5 @@
 import { leveltwo } from './scenes/LevelTwo.js';
-import { Start } from './scenes/Start.js';
+import { LevelOne } from './scenes/LevelOne.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -15,7 +15,7 @@ const config = {
         //arcade:{debug:true}
     },
     scene: [
-        Start,
+        LevelOne,
         leveltwo
     ],
     scale: {
@@ -25,4 +25,3 @@ const config = {
 }
 
 new Phaser.Game(config);
-            
